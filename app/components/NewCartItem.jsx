@@ -7,6 +7,7 @@ import { type } from 'os';
 import { Trash2 } from 'lucide-react';
 import { deleteItemFromCart } from '../actions/deleteItemFromCart';
 import { updateItemInCart } from '../actions/updateItemInCart';
+import { handleSubmit } from '../components/MenuItem';
 //newcartitem is the combination of customcartitem and noncustomcartitem
 //so it's longer because it includes the ability to customize the cart item if it's customizable
 //but it saves an if/else statement in the parent
