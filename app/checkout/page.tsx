@@ -6,7 +6,7 @@ import { createClient } from "@/utils/supabase/server"
 import { getCustomerProfile } from "../actions/getProfileData"
 import { CheckoutItemServerComponent } from "../components/CheckoutItemServerComponent"
 import { SubmitOrderButton } from "../components/SubmitOrderButton"
-import { ShoppingBag, AlertCircle, ArrowLeft } from "lucide-react"
+import { ShoppingBag, AlertCircle, ArrowLeft, Truck } from "lucide-react"
 import Link from "next/link"
 
 //checkout page which displays customer's cart info
@@ -44,7 +44,8 @@ export default async function Checkout() {
   const menuItems = await getAllMenuItems()
   const subtotal = (await getLiveCartSubtotal()) as number
   const tax = subtotal * 0.0825 // 8.25% tax rate
-  const total = subtotal + tax
+  const deliveryFee = 5.0 // $5 delivery fee
+  const total = subtotal + tax + deliveryFee
 
   var customer = await getCustomerProfile()
 
@@ -134,29 +135,30 @@ export default async function Checkout() {
             <div className="p-4 space-y-4">
               <div className="flex justify-between py-2">
                 <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium">${subtotal.toFixed(2)}</span>
+                <span className="font-medium">${Number(subtotal).toFixed(2)}</span>
               </div>
 
               <div className="flex justify-between py-2">
                 <span className="text-gray-600">Tax (8.25%)</span>
-                <span className="font-medium">${tax.toFixed(2)}</span>
+                <span className="font-medium">${Number(tax).toFixed(2)}</span>
+              </div>
+
+              <div className="flex justify-between py-2">
+                <span className="text-gray-600 flex items-center gap-1">
+                  <Truck className="h-4 w-4" />
+                  Delivery Fee
+                </span>
+                <span className="font-medium">${deliveryFee.toFixed(2)}</span>
               </div>
 
               <div className="border-t border-gray-200 pt-4 mt-4">
                 <div className="flex justify-between">
                   <span className="text-lg font-bold">Total</span>
-                  <span className="text-lg font-bold">${total.toFixed(2)}</span>
+                  <span className="text-lg font-bold">${Number(total).toFixed(2)}</span>
                 </div>
               </div>
 
               <div className="pt-4">
-                <div className="bg-gray-50 p-4 rounded-md mb-4">
-                  <h3 className="font-medium mb-2">Delivery Address</h3>
-                  <p className="text-gray-600">
-                    {customer?.customer?.address || "No address provided. Please update your profile."}
-                  </p>
-                </div>
-
                 {/* Submit Order Button */}
                 <SubmitOrderButton
                   orderId={existingOrder?.order_id}

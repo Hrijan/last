@@ -2,11 +2,15 @@
 
 import { useState, useEffect } from "react"
 import { clientGetSumCostOfIngredients } from "../actions/clientGetSumCostOfIngredients"
+import { useCart } from "../context/CartContext"
 
 /**
  * Menu item component that displays item details and handles add to cart functionality
  */
 export function MenuItem({ menuItem, ingredients, menuItemPrice, sizes, addItemToCart }) {
+  // Get cart context
+  const { incrementCart } = useCart()
+
   // Get size objects
   const smallSize = sizes?.find((ingredient) => ingredient.name === "Small Size")
   const mediumSize = sizes?.find((ingredient) => ingredient.name === "Medium Size")
@@ -106,6 +110,9 @@ export function MenuItem({ menuItem, ingredients, menuItemPrice, sizes, addItemT
     if (e) e.preventDefault()
     await addItemToCart(menuItem.menu_item_id, selectedIngredients)
 
+    // Update cart count immediately
+    incrementCart()
+
     if (menuItem.customizable) {
       setIsPopupOpen(false)
     } else {
@@ -114,14 +121,18 @@ export function MenuItem({ menuItem, ingredients, menuItemPrice, sizes, addItemT
   }
 
   // Handle quick add to cart with size selection
-  const handleQuickAddToCart = (sizeId) => {
+  const handleQuickAddToCart = async (sizeId) => {
     const ingredientIds = [...menuItem.ingredients]
 
     if (sizeId) {
       ingredientIds.push(sizeId)
     }
 
-    addItemToCart(menuItem.menu_item_id, ingredientIds)
+    await addItemToCart(menuItem.menu_item_id, ingredientIds)
+
+    // Update cart count immediately
+    incrementCart()
+
     setShowSizeOptions(false)
   }
 
@@ -286,13 +297,13 @@ export function MenuItem({ menuItem, ingredients, menuItemPrice, sizes, addItemT
               >
                 Large
               </button>
-              <button
+            </div>
+            <button
               onClick={() => setShowSizeOptions(false)}
-              className="py-2 bg-white hover:bg-gray-50 text-gray-800 font-medium rounded-md border border-gray-300 transition-colors text-sm w-full"
+              className="mt-2 py-2 bg-white hover:bg-gray-50 text-gray-800 font-medium rounded-md border border-gray-300 transition-colors text-sm w-full"
             >
               Cancel
             </button>
-            </div>
           </div>
         )}
       </div>
