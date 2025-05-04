@@ -32,10 +32,13 @@ export default async function ViewSingleOrder({ searchParams }: { searchParams: 
   const { order, orderInfo, userId, error } = await getPaidOrder(parsedP)
   const subtotal = await getPaidCartSubtotal(parsedP)
 
+  // Ensure subtotal is a number
+  const formattedSubtotal = typeof subtotal === "number" ? subtotal : 0
+
   // Calculate tax and total
-  const tax = subtotal * 0.0825 // 8.25% tax rate
+  const tax = formattedSubtotal * 0.0825 // 8.25% tax rate
   const deliveryFee = 5.0 // $5 delivery fee
-  const total = subtotal + tax + deliveryFee
+  const total = formattedSubtotal + tax + deliveryFee
 
   // Make sure the order is iterable for the map below
   if (!Array.isArray(order)) {
@@ -133,11 +136,11 @@ export default async function ViewSingleOrder({ searchParams }: { searchParams: 
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium">${Number(subtotal).toFixed(2)}</span>
+                <span className="font-medium">${formattedSubtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Tax (8.25%)</span>
-                <span className="font-medium">${Number(tax).toFixed(2)}</span>
+                <span className="font-medium">${tax.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Delivery Fee</span>
@@ -146,7 +149,7 @@ export default async function ViewSingleOrder({ searchParams }: { searchParams: 
               <div className="border-t border-gray-200 pt-2 mt-2">
                 <div className="flex justify-between">
                   <span className="font-bold">Total</span>
-                  <span className="font-bold">${Number(total).toFixed(2)}</span>
+                  <span className="font-bold">${total.toFixed(2)}</span>
                 </div>
               </div>
             </div>

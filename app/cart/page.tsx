@@ -25,6 +25,9 @@ export default async function Cart() {
     )
   }
 
+  // Ensure subtotal is a number
+  const formattedSubtotal = typeof subtotal === "number" ? subtotal : 0
+
   return (
     <div className="max-w-4xl mx-auto p-6 my-8">
       <div className="flex items-center gap-3 mb-8">
@@ -50,7 +53,7 @@ export default async function Cart() {
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
             <div className="flex justify-between items-center">
               <span className="text-gray-600 font-medium">Items ({cart.length})</span>
-              <span className="text-xl font-bold">${subtotal.toFixed(2)}</span>
+              <span className="text-xl font-bold">${formattedSubtotal.toFixed(2)}</span>
             </div>
           </div>
 
