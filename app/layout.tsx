@@ -8,7 +8,7 @@ import { getCustomerType } from "../app/actions/getCustomerType"
 import { Home, Menu, ShoppingCart, User, LayoutDashboard } from "lucide-react"
 import { CartProvider } from "../app/context/CartContext" // Import CartProvider
 import { CartCounter } from "../app/components/CartCounter" // Import CartCounter
-import type { ReactNode } from "react";
+import type { ReactNode } from "react"
 
 const defaultUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"
 
@@ -24,11 +24,10 @@ const geistSans = Geist({
 })
 
 interface RootLayoutProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
-
-export default async function RootLayout({ children }) {
+export default async function RootLayout({ children }: RootLayoutProps) {
   // Get profile type using a client-side approach or static props
   let profileType = 0
   try {

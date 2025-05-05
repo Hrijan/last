@@ -6,6 +6,19 @@ import { getPaidCartSubtotal } from "../actions/getPaidCartSubtotal"
 import Link from "next/link"
 import { ShoppingBag, MapPin, MessageSquare, ArrowLeft, Clock, CheckCircle } from "lucide-react"
 
+// Define types for ingredient IDs
+interface OrderItem {
+  itemId: number
+  nonce: string
+  ingredientIds: number[]
+}
+
+interface OrderInfo {
+  order_id: number
+  order_delivery_address: string
+  order_delivery_instructions?: string
+}
+
 // This is the page the customer is directed to after they submit their order
 // It shows them the details for the single order by the number in the URL
 export default async function ViewSingleOrder({ searchParams }: { searchParams: Promise<{ p?: string }> }) {
@@ -53,7 +66,7 @@ export default async function ViewSingleOrder({ searchParams }: { searchParams: 
   }
 
   // Function to get ingredient names
-  const getIngredientNames = (ingredientIds) => {
+  const getIngredientNames = (ingredientIds: number[]) => {
     if (!ingredients) return []
 
     return ingredientIds
@@ -65,7 +78,7 @@ export default async function ViewSingleOrder({ searchParams }: { searchParams: 
   }
 
   // Function to get size name
-  const getSize = (ingredientIds) => {
+  const getSize = (ingredientIds: number[]) => {
     if (!ingredients) return "Medium"
 
     const sizeIngredient = ingredients.find(
@@ -163,13 +176,14 @@ export default async function ViewSingleOrder({ searchParams }: { searchParams: 
         </div>
 
         <div className="divide-y divide-gray-200">
-          {order.map((orderItem) => {
+          {order.map((orderItem: OrderItem) => {
             var itemId = orderItem.itemId
             var itemNonce = orderItem.nonce
             const menuItem = menuItems.find((item) => item.menu_item_id === itemId)
 
             if (!menuItem) {
-              deleteItemFromCart(itemNonce)
+              const nonceAsNumber = parseInt(itemNonce, 10)
+              deleteItemFromCart(nonceAsNumber)
               return null
             }
 
